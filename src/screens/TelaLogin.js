@@ -36,7 +36,7 @@ export default class TelaLogin extends Component {
         if(this.state.stageNew) {
             this.signup()
         } else {
-            Alert.alert('Sucesso!', 'Logar')
+            this.signin()
         }
     }
 
@@ -58,8 +58,44 @@ export default class TelaLogin extends Component {
             showError(e)
         }
     }   
+
+    signin = async () => {
+        try {
+            //validando os dados do login e se ele validar ele vai receber a resposta
+            const res = await axios.post(`${server}/signin`, {
+                email: this.state.email,
+                password: this.state.password
+            })
+            //Recebenco  a resposta eu tenho o token
+            //E o token vai ser setado no Header Autorization 
+            //sendo mandado em qualquer nova outorizção que for solicitada
+            axios.defaults.headers.common['Authorization'] = `bearer ${res.data.token}`
+            //navegação
+            this.props.navigation.navigate('Home')
+                showError(e)
+        } catch(e){
+
+        }
+    }
+
     
     render() {
+        //Criando validações
+        const validations = []
+        validations.push(this.state.email && this.state.email.includes('@'))
+        validations.push(this.state.password && this.state.password.length >=6)
+
+        //Validando alguns compus do cadastro
+        if(this.state.stageNew) {
+            validations.push(this.state.name && this.state.name.trim().length >=3)
+            validations.push(this.state.password === this.state.confirmPassowrd)
+
+        }
+        //Validano formulario.
+        //Todos o valores tem que ser verdadeiros para a expressão ser verdadeira
+        //Ele está pengando todos elementos do array e fazendo uma expressão lógica
+        //Então só vou ter oformulario verdadeiro se o resultado for verdadeiro.
+        const validandoForm = validations.reduce((vTotal, vAtual) => vTotal && vAtual)
         return (
             <ImageBackground source={backgroundImage}
                 style={styles.background}>
@@ -93,8 +129,11 @@ export default class TelaLogin extends Component {
                             onChangeText={confirmPassowrd => this.setState({ confirmPassowrd })}/>            
                     
                     }
-                    <TouchableOpacity onPress={this.signinOrSingup}>
-                        <View style={styles.button}>
+                    <TouchableOpacity onPress={this.signinOrSingup}
+                        // Se o meu formulário não for válido vou desabilitar o botão
+                        disabled={!validandoForm}>
+                        {/* Alterando a cor do botão se o formulario não for valido com expressão ternaria */}
+                        <View style={[styles.button, validandoForm ? {} : { backgroundColor: '#AAA'}]}>
                             <Text style={styles.buttonText}>
                                 {this.state.stageNew ? 'Cadastar' : 'Entrar'}
                             </Text>
