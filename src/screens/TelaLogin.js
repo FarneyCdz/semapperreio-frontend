@@ -142,7 +142,7 @@ export default class TelaLogin extends Component {
                     
                 </View>
                 {/* Responsável por fazer a auternancia entre os dois modulo, o de usuário e o de login */}
-                <TouchableOpacity style={ {padding: 10} }
+                <TouchableOpacity style={ { padding: 10} }
                     //No stageNew pego o valor atual nego e seto no proprio stageNew
                     //Sempre que clicar vou está alternando os valores
                     onPress={() => this.setState({ stageNew: !this.state.stageNew })}>
@@ -165,12 +165,12 @@ const styles = StyleSheet.create({
     title: {
         fontFamily: commonStyles.fontFamily,
         color: commonStyles.colors.secondary,
-        fontSize: 55,
+        fontSize: 50,
         marginBottom: 10
     },
     subtitle: {
         fontFamily: commonStyles.fontFamily,
-        color: '#FFF',
+        color: '#D79C7A',
         fontSize: 20,
         textAlign: 'center',
         marginBottom: 10
@@ -197,6 +197,6 @@ const styles = StyleSheet.create({
     buttonText: {
         fontFamily: commonStyles.fontFamily,
         color: '#FFF',
-        fontSize: 20
+        fontSize: 22
     }
 })
