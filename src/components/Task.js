@@ -1,20 +1,42 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
+
+import moment from 'moment'
+import 'moment/locale/pt-br'
 
 import commonStyles from '../commonStyles'
 
 export default props => {
+     
+    //Determinando se a tarefa está concluida ou não
+    const doneOrNotStyle = props.doneAt != null ?
+        //Se a tarefa está concluida ele vai passar um traço no texto
+        //se não ele vai aplicar um estilo vazio
+        {textDecorationLine: 'line-through' } : {}
+    //Data de conclusão para uma tarefa concluida e uma data estimada para uma tarefa não concluida
+    const date = props.doneAt ? props.doneAt : props.estimateAt
+    const formatedDate = moment(date).locale('pt-br')
+        .format('ddd, D [de] MMMM')
+ 
     return (
         <View style={styles.container}>
-            <View style={styles.checkContainer}>
-                {getCheckView(props.doneAt)}
-            </View>
+            {/* Região que pode ser tocada */}
+           <TouchableWithoutFeedback
+           //Passando o Id do elemento que vai ser clicado
+                onPress={() => props.onToggleTask(props.id)}>         
+                <View style={styles.checkContainer}>
+                    {getCheckView(props.doneAt)}
+                </View>
+           </TouchableWithoutFeedback>
+           
+           
+           
             <View>
                 {/* Descrição da tarefa */}
-                <Text>{props.desc}</Text>
+                <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
                 {/* Estimativa da tarefa pronta */}
-                <Text>{props.estimateAt + ""}</Text>
+                <Text style={styles.date}>{formatedDate}</Text>
 
                 {/* Quando a tarefa for concluída
                 <Text>{props.doneAt + ""}</Text>
@@ -68,6 +90,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#87CEFA',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    desc: {
+        fontFamily: commonStyles.fontFamily,
+        color:commonStyles.colors.mainText,
+        fontSize: 15
+    },
+    date: {
+        fontFamily: commonStyles.fontFamily,
+        color: commonStyles.colors.subText,
+        fontSize: 12
     }
 
 
