@@ -2,6 +2,7 @@ import React from 'react'
 import { View, TextInput, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
+//Responsavel por encapsular o input dentro da tela de autenticação/Login
 export default props => {
     return (
         <View style={[styles.container, props.style]}>

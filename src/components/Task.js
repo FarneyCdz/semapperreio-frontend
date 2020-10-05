@@ -23,7 +23,11 @@ export default props => {
         <View style={styles.container}>
             {/* Região que pode ser tocada */}
            <TouchableWithoutFeedback
-           //Passando o Id do elemento que vai ser clicado
+           //Passando o Id do elemento que vai ser clicado atravez de uma função callback
+           //Quando o usuário clicar ele vai chamar essa função que ele espera ter recebido via props
+           //Ele passa o ID do elemento que está sendo clicado e a função no Pai é chamada
+           //Essa é a comunicação indireta quando você passa via propriedade uma função para filho
+           //e o componente filho chama essa função comunicando com o pai de forma indireta a partir de uma função callback
                 onPress={() => props.onToggleTask(props.id)}>         
                 <View style={styles.checkContainer}>
                     {getCheckView(props.doneAt)}
