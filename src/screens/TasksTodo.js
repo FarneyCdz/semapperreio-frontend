@@ -11,6 +11,7 @@ import moment from 'moment'//importando a data de hoje
 import 'moment/locale/pt-br'//Traduz o valor das datas
 
 import Task from '../components/Task'//Usa uma comunicação direta com do pai pata o filho Task
+import AddTask from './AddTask'
 
 export default class TasksTodo extends Component {
     
@@ -23,6 +24,7 @@ export default class TasksTodo extends Component {
          visibleTasks: [],
          //Criando atributo que vai mostrar ou não as tasks concluídas
         showDoneTasks: true,
+        showAddTask: true,
         tasks: [{
             id: Math.random(),
             desc: 'Estudar IA',
@@ -133,6 +135,10 @@ export default class TasksTodo extends Component {
         const today = moment().locale('pt-br').format('ddd, D [de] MMM')
         return (
             <View style={styles.container}>
+                <AddTask isVisible={this.state.showAddTask} 
+                    //Esse metodo vai ser chamado ao clicar na aplicação da tela de tarefas
+                    //que está dentro do meu modal
+                    onCancel={() => this.setState({showAddTask:false})}/>
                 <ImageBackground source={todayImage} 
                     style={styles.background}>
              
