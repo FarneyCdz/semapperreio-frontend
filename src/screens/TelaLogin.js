@@ -15,7 +15,7 @@ import { server, showError, showSuccess } from '../common'
 
 const initialState = {
     name:'',
-    email:'farney@gmail.com',
+    email:'farney.tec@gmail.com',
     password:'123456',
     confirmPassowrd:'',
     //Atributo que vai dizer se estou no estado de Cadastro ou de login

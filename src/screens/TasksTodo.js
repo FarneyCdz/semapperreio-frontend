@@ -24,7 +24,7 @@ export default class TasksTodo extends Component {
          visibleTasks: [],
          //Criando atributo que vai mostrar ou não as tasks concluídas
         showDoneTasks: true,
-        showAddTask: true,
+        showAddTask: false,
         tasks: [{
             id: Math.random(),
             desc: 'Estudar IA',
@@ -150,7 +150,7 @@ export default class TasksTodo extends Component {
                 </ImageBackground>
                                
                
-                {/* Passando as propriedades para do componente TasksTodo que é o 
+                {/* Passando as propriedades para o componente TasksTodo que é o 
                 pai passando via props para as tasks uma comunicação direta*/}
                 <View style={styles.tasksTodo}>
                     {/* O FlatList está percorrendo um array de objetos javascript 
@@ -167,8 +167,7 @@ export default class TasksTodo extends Component {
                        //de rederizar cada uma das Tasks. O pai passando via props os parametros para o filho
                         renderItem={({item}) => <Task {...item} onToggleTask={this.toggleTask} />}/>
                 </View>
-                <ImageBackground source={barraImage} 
-                    style={styles.barraImageBackground}>
+                <ImageBackground style={styles.barraImageBackground}>
                     <View style={styles.iconBar}>
                         <TouchableOpacity onPress={this.toggleFilter}>
                             {/* Aqui ele ira fazer uma operação ternaria escolhendo se
@@ -180,6 +179,16 @@ export default class TasksTodo extends Component {
                     </View>
 
                 </ImageBackground>
+
+                {/*Botão adcionando uma tarefa*/}
+                <TouchableOpacity style={styles.addButton}
+                    //Botão ao clicar fica com um cor opaca
+                    activeOpacity={0.7}
+                    //Quando clicarmos no botão o onPress vai alterar o estado do atributo
+                    onPress={() => this.setState({ showAddTask: true })}>
+                    <Icon name="plus" size={25}
+                        color={commonStyles.colors.secondary}/>
+                </TouchableOpacity>
                            
             </View>
         )
@@ -195,11 +204,15 @@ const styles = StyleSheet.create({
         flex: 4
     },  
     tasksTodo: {
-        flex: 7
+        flex: 10
     },
     barraImageBackground: {
-        flex: 1,
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end', 
+        width: 414,
+        height: 43, 
+        borderStyle: "solid",   
+        backgroundColor: commonStyles.colors.today,
+       
     },
     titleBar: {
         flex: 1,
@@ -209,8 +222,9 @@ const styles = StyleSheet.create({
         fontFamily: commonStyles.fontFamily,
         color: commonStyles.fontFamily.secondary,
         fontSize: 48,
-        marginLeft: 20,
-        marginBottom: 1
+        marginLeft: 20,        
+        marginBottom: 1,
+        
     },
     subtitle: {
         fontFamily: commonStyles.fontFamily,
@@ -226,6 +240,14 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         // Nesse caso se for IOS ele vai dar um margiTop 40 e se for android ele da um marginTop 10 
         marginTop: Platform.OS === 'ios' ? 40 : 10
+    },
+    addButton: {
+        position: 'absolute',
+        marginHorizontal: 190,
+        bottom: 10,
+        backgroundColor: commonStyles.colors.today,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
  
 
