@@ -23,7 +23,7 @@ import commonStyles from '../commonStyles'
 //Defindo estado inicial porque vai ter situações que vou precisar
 //restartar ou resetar o estado
 //Definindo a data atual para tarefa
-//Definindo o selesionador  showDatePicker: false da data
+//Definindo o selecionador  showDatePicker: false da data
 //para ela só aparecer quando for chamada na tarefa
 const initialSate = { desc: '', date: new Date(), showDatePicker: false}
 
@@ -32,6 +32,28 @@ export default class AddTask extends Component{
     state = {
         ...initialSate
     }
+
+    save = () => {
+        //Criando um objeto
+        const newTask = {
+            desc: this.state.desc,
+            date: this.state.date
+        }
+            //Usando uma expressão do tipo '&'
+            //Se onSave estiver setado ele vai chamar a segunda parte da expressão
+            //Ou seja ele vai executar o onSave
+            //Se a primeira expressão estiver falsa this.props.OnSave não estiver setado
+            //Ele não vai executar a função
+            //No Onsave também é um momento que me comunico com meu pai, no modal tem as informações 
+            //da nova Tarefa que está sendo cadastrada, quando clico em salvar eu chama a função
+            //que foi passada pelo pai via propriedade via comunicação indireta, 
+            //ou seja, o filho comunicando com o pai a partir de uma comunicação callback
+            this.props.onSave && this.props.onSave(newTask)
+            //zerando o estado da tela para restaurar o estado do componente
+            this.setState({ ...initialSate })
+
+    }    
+
     //Lógica da função encapsulada
     getDatePicker = () => {
         let datePicker = <DateTimerPicker value={this.state.date}
@@ -54,6 +76,11 @@ export default class AddTask extends Component{
                             {dateString}
                         </Text> */}
                     </TouchableOpacity>
+                    {/* Usando uma expressão do tipo &
+                     Se showDatePicker estiver setado ele vai chamar a segunda parte da expressão
+                     Ou seja ele vai executar o showDatePicker
+                     Se a primeira expressão estiver falsa this.state.showDatePicke não estiver setado
+                     Ele não vai executar a função */}
                     {this.state.showDatePicker && datePicker}
                 </View>
             )
@@ -96,10 +123,9 @@ export default class AddTask extends Component{
                         <TouchableOpacity onPress={this.props.onCancel}>
                             <Text style={styles.button}>Cancelar</Text>
                         </TouchableOpacity>
-
-                        <TouchableOpacity>
+                        {/* Chamando a função save */}
+                        <TouchableOpacity onPress={this.save}>
                             <Text style={styles.button}>Salvar</Text>
-
                         </TouchableOpacity>
                     </View>
                 </View>
