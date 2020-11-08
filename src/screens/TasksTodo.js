@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ImageBackground, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native'
+import { Alert, View, Text, ImageBackground, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native'
 
 import commonStyles from '../commonStyles.js'
 import todayImage from '../../assets/imgs/today.jpg'
@@ -30,52 +30,11 @@ export default class TasksTodo extends Component {
             desc: 'Estudar IA',
             estimateAt: new Date(),
             doneAt: new Date(),
-
-        }, {
+        },{
             id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
+            desc: 'Estudar react-native',
             estimateAt: new Date(),
-            doneAt: null,   
-        }, {
-            id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
-            estimateAt: new Date(),
-            doneAt: null,
-        }, {
-            id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
-            estimateAt: new Date(),
-            doneAt: null, 
-        }, {
-            id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
-            estimateAt: new Date(),
-            doneAt: null, 
-        }, {
-            id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
-            estimateAt: new Date(),
-            doneAt: null,
-        }, {
-            id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
-            estimateAt: new Date(),
-            doneAt: null, 
-        }, {
-            id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
-            estimateAt: new Date(),
-            doneAt: null,  
-        }, {
-            id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
-            estimateAt: new Date(),
-            doneAt: null,  
-        }, {
-            id: Math.random(),
-            desc: 'Desenvolvendo projeto Estágio 3',
-            estimateAt: new Date(),
-            doneAt: null,                       
+            doneAt: null                  
         }]
     }
     //Assim que o componente for montado
@@ -125,12 +84,60 @@ export default class TasksTodo extends Component {
             }
 
         })
-        //Passando um novo objeto com tasks epassando 
+        //Passando um novo objeto com tasks e passando 
         //Logo depois o filtro das tarefas para que a tarefa 
         //que já foi concluida fique oculta.
         this.setState({ tasks }, this.filterTasks)
 
     }
+    //Adicionando uma nova tarefa no array
+    //passando por parametro a newTask para modal
+    addTask = newTask => {
+        //Se nao estir uma descrição ou vazia e se a descrição não for verdadeira e sem espaços em brancos
+        //Ela entra no if.
+        if(!newTask.desc || !newTask.desc.trim()) {
+            Alert.alert('Dados Inválidos', 'Descrição não informada!')
+            return
+        }
+
+        //Gerando um clone das minhas tarefas
+        //Apartir do clone vou adicionar dentro da lista a 
+        //nova tarefa que recebi da função
+        const tasks = [ ...this.state.tasks]
+        //Passando um novo objeto
+        tasks.push({
+            //ID vai ser temporario só para preenher os requisitos de ter um ID unico por tarefa
+            id: Math.random(),
+            desc: newTask.desc,
+            estimateAt: newTask.date,
+            doneAt: null
+
+        })
+        //Alterando o estado da tarefa e fechando o modal após criar a tarefa
+        //Criado a nova tarefa passo a callback que será chamado depois do estado for atualizado
+        //atualizando filterTask 
+        this.setState({ tasks, showAddTask: false}, this.filterTasks)
+
+    }
+
+    //Método que vai remover  uma tarefa
+    deleteTask = id => {
+        //Recebendo cada uma das tarefas e em seguida 
+        //vou filtrar todas as tarefas que tem o id
+        //diferente do id que foi passado
+        //Se o id for diferente do id que foi passado 
+        //essa tarefa vai estar contida em um novo array final
+        //O filter vai criar um novo array diferente do 
+        //array original, ele não vai pegar o array original
+        //e tirar elemento, ele vai gerar um novo array sem o 
+        //elemento que foi filtrado 
+        const tasks = this.state.tasks.filter(task => task.id !== id)
+        //Chamando o setState e passando o array de tarefas
+        //Dessa forma garanto que a tarefa que foi excluida
+        // vai sumir da lista de tarefas atuais
+        this.setState({ tasks }, this.filterTasks)
+    }
+
     render() {
         const today = moment().locale('pt-br').format('ddd, D [de] MMM')
         return (
@@ -138,7 +145,8 @@ export default class TasksTodo extends Component {
                 <AddTask isVisible={this.state.showAddTask} 
                     //Esse metodo vai ser chamado ao clicar na aplicação da tela de tarefas
                     //que está dentro do meu modal
-                    onCancel={() => this.setState({showAddTask:false})}/>
+                    onCancel={() => this.setState({showAddTask:false})}
+                    onSave={this.addTask}/>
                 <ImageBackground source={todayImage} 
                     style={styles.background}>
              
@@ -165,7 +173,10 @@ export default class TasksTodo extends Component {
                        //Tendo assim uma comunicação direta, o componente Pai que é TasksTodo passa para
                        //o componente Tasks o componente filho os  parametros que ele quer que seja usado na hora ,
                        //de rederizar cada uma das Tasks. O pai passando via props os parametros para o filho
-                        renderItem={({item}) => <Task {...item} onToggleTask={this.toggleTask} />}/>
+                       //Sempre que acontecer um evento de delete dentro da tasks nas duas formas de deletar a 
+                       //tarefa do lado direito ou esquerdo, ele vai chamar o metodo deleteTasks e a tarefa vai ser excluida
+                       
+                        renderItem={({item}) => <Task {...item} onToggleTask={this.toggleTask} onDelete={this.deleteTask} />}/>
                 </View>
                 <ImageBackground style={styles.barraImageBackground}>
                     <View style={styles.iconBar}>
@@ -180,7 +191,7 @@ export default class TasksTodo extends Component {
 
                 </ImageBackground>
 
-                {/*Botão adcionando uma tarefa*/}
+                {/*Botão adicionando uma tarefa*/}
                 <TouchableOpacity style={styles.addButton}
                     //Botão ao clicar fica com um cor opaca
                     activeOpacity={0.7}
@@ -221,9 +232,9 @@ const styles = StyleSheet.create({
     title: {
         fontFamily: commonStyles.fontFamily,
         color: commonStyles.fontFamily.secondary,
-        fontSize: 48,
+        fontSize: 45,
         marginLeft: 20,        
-        marginBottom: 1,
+        marginBottom: -5,        
         
     },
     subtitle: {
@@ -231,7 +242,7 @@ const styles = StyleSheet.create({
         color: commonStyles.fontFamily.secondary,
         fontSize: 20,
         marginLeft: 20,
-        marginBottom: 30
+        marginBottom: 7
     },
     iconBar: {
         flexDirection: 'row',
