@@ -120,6 +120,7 @@ export default class TasksTodo extends Component {
 
     }
 
+<<<<<<< HEAD
     //Método que vai remover  uma tarefa
     deleteTask = id => {
         //Recebendo cada uma das tarefas e em seguida 
@@ -138,6 +139,8 @@ export default class TasksTodo extends Component {
         this.setState({ tasks }, this.filterTasks)
     }
 
+=======
+>>>>>>> 273acf7c980be92bc37b7b214659e0e3ebe5349b
     render() {
         const today = moment().locale('pt-br').format('ddd, D [de] MMM')
         return (
