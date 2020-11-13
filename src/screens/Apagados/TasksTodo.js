@@ -133,7 +133,7 @@ export default class TasksTodo extends Component {
         try {
             await axios.put(`${server}/tasks/${taskId}/toggle`)
             //feito as alternancias ele retorna o estado mais novo das tarefas
-            this.loadTasks()
+            await this.loadTasks()
         } catch(e){
             showError(e)
         }
@@ -184,27 +184,21 @@ export default class TasksTodo extends Component {
     }
 
     //Método que vai remover  uma tarefa
-    deleteTask = async taskId => {
-        // //Recebendo cada uma das tarefas e em seguida 
-        // //vou filtrar todas as tarefas que tem o id
-        // //diferente do id que foi passado
-        // //Se o id for diferente do id que foi passado 
-        // //essa tarefa vai estar contida em um novo array final
-        // //O filter vai criar um novo array diferente do 
-        // //array original, ele não vai pegar o array original
-        // //e tirar elemento, ele vai gerar um novo array sem o 
-        // //elemento que foi filtrado 
-        // const tasks = this.state.tasks.filter(task => task.id !== id)
-        // //Chamando o setState e passando o array de tarefas
-        // //Dessa forma garanto que a tarefa que foi excluida
-        // // vai sumir da lista de tarefas atuais
-        // this.setState({ tasks }, this.filterTasks)
-        try {
-            await axios.delete(`${server}/tasks/${taskId}`)
-            this.loadTasks()
-        } catch(e) {
-            showError(e)
-        }
+    deleteTask = id => {
+        //Recebendo cada uma das tarefas e em seguida 
+        //vou filtrar todas as tarefas que tem o id
+        //diferente do id que foi passado
+        //Se o id for diferente do id que foi passado 
+        //essa tarefa vai estar contida em um novo array final
+        //O filter vai criar um novo array diferente do 
+        //array original, ele não vai pegar o array original
+        //e tirar elemento, ele vai gerar um novo array sem o 
+        //elemento que foi filtrado 
+        const tasks = this.state.tasks.filter(task => task.id !== id)
+        //Chamando o setState e passando o array de tarefas
+        //Dessa forma garanto que a tarefa que foi excluida
+        // vai sumir da lista de tarefas atuais
+        this.setState({ tasks }, this.filterTasks)
     }
 
     render() {
