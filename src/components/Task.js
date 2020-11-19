@@ -1,6 +1,8 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, StyleSheet, TouchableWithoutFeedback,TouchableOpacity } from 'react-native'
+
 import Icon from 'react-native-vector-icons/FontAwesome'
+import Swipeable from 'react-native-gesture-handler/Swipeable'
 
 import moment from 'moment'
 import 'moment/locale/pt-br'
@@ -18,36 +20,61 @@ export default props => {
     const date = props.doneAt ? props.doneAt : props.estimateAt
     const formatedDate = moment(date).locale('pt-br')
         .format('ddd, D [de] MMMM')
- 
-    return (
-        <View style={styles.container}>
-            {/* Região que pode ser tocada */}
-           <TouchableWithoutFeedback
-           //Passando o Id do elemento que vai ser clicado atravez de uma função callback
-           //Quando o usuário clicar ele vai chamar essa função que ele espera ter recebido via props
-           //Ele passa o ID do elemento que está sendo clicado e a função no Pai é chamada
-           //Essa é a comunicação indireta quando você passa via propriedade uma função para filho
-           //e o componente filho chama essa função comunicando com o pai de forma indireta a partir de uma função callback
-                onPress={() => props.onToggleTask(props.id)}>         
-                <View style={styles.checkContainer}>
-                    {getCheckView(props.doneAt)}
-                </View>
-           </TouchableWithoutFeedback>
-           
-           
-           
-            <View>
-                {/* Descrição da tarefa */}
-                <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
-                {/* Estimativa da tarefa pronta */}
-                <Text style={styles.date}>{formatedDate}</Text>
+    
+    const getRightContent = () => {
+        return (
+            <TouchableOpacity style={styles.right}
+                //Se props.onDelete estiver setado 
+                //Ai que vou chamar o props.onDelete(id)
+                //para só ai clicar atraves do TouchableOpacity
+                //no botão da lixeira e apagar a tarefa 
+                onPress={() => props.onDelete && props.onDelete(props.id)}>
+                <Icon name="trash" size={25} color = '#FFF' />
+            </TouchableOpacity>
+        )
+    }
 
-                {/* Quando a tarefa for concluída
-                <Text>{props.doneAt + ""}</Text>
-                */}
+    const getLeftContent = () => {
+        return (
+            <View style={styles.left}>
+                <Icon name="trash" size={20} color = '#FFF'
+                style={styles.excludeIcon}/>
+                <Text style={styles.excludeText}>Excluir</Text>
             </View>
+        )
+    }
+    return (
+        <Swipeable
+            renderRightActions={getRightContent}
+            renderLeftActions={getLeftContent} 
+            //Quando o lado Left o usuario abrir vai disparar o evento de exclusão
+            onSwipeableLeftOpen ={() => props.onDelete && props.onDelete(props.id) }>        
+            <View style={styles.container}>
+                {/* Região que pode ser tocada */}
+            <TouchableWithoutFeedback
+            //Passando o Id do elemento que vai ser clicado atravez de uma função callback
+            //Quando o usuário clicar ele vai chamar essa função que ele espera ter recebido via props
+            //Ele passa o ID do elemento que está sendo clicado e a função no Pai é chamada
+            //Essa é a comunicação indireta quando você passa via propriedade uma função para filho
+            //e o componente filho chama essa função comunicando com o pai de forma indireta a partir de uma função callback
+                    onPress={() => props.onToggleTask(props.id)}>         
+                    <View style={styles.checkContainer}>
+                        {getCheckView(props.doneAt)}
+                    </View>
+            </TouchableWithoutFeedback>           
             
-        </View>
+                <View>
+                    {/* Descrição da tarefa */}
+                    <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
+                    {/* Estimativa da tarefa pronta */}
+                    <Text style={styles.date}>{formatedDate}</Text>
+
+                    {/* Quando a tarefa for concluída
+                    <Text>{props.doneAt + ""}</Text>
+                    */}
+                </View>                
+            </View>
+        </Swipeable>
     )
 }
 
@@ -69,10 +96,13 @@ function getCheckView(doneAt) {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        borderColor: '#AAA',
-        borderBottomWidth: 1,
         alignItems: 'center',
-        paddingVertical: 10 ,
+        paddingVertical: 12 ,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        marginVertical: 8,
+        marginHorizontal:10 ,
+        borderRadius: 15,
+        
     },
     checkContainer: {
         width: '20%',
@@ -85,7 +115,7 @@ const styles = StyleSheet.create({
         width: 25,
         borderRadius: 13,
         borderWidth: 1,
-        borderColor: '#555'
+        borderColor: '#C0C0C0'
     },
     done: {
         height: 25,
@@ -96,14 +126,39 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     desc: {
-        fontFamily: commonStyles.fontFamily,
-        color:commonStyles.colors.mainText,
+        fontFamily: 'Helvetica, sans-serif',
+        color: '#FFF',
         fontSize: 15
     },
     date: {
         fontFamily: commonStyles.fontFamily,
-        color: commonStyles.colors.subText,
+        color: '#FFF',
         fontSize: 12
+    },
+    right: {
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingHorizontal: 20,
+        
+    }, 
+    left: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        flexDirection: 'row',
+        alignItems: 'center',              
+
+    },
+    excludeIcon: {
+        marginLeft: 10
+    },
+    excludeText: {
+        fontFamily: commonStyles.fontFamily,
+        color: '#FFF',
+        fontSize: 20,
+        margin: 10,
+
     }
 
 

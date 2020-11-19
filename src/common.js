@@ -5,9 +5,9 @@ const server = Platform.OS === 'ios'
 
 function showError(err) {
     if(err.response && err.response.data) {
-            Alert.alert('Ops! Ocorreu um Problema!', `Mensagem: ${err.response.data}`)
+            Alert.alert(`Erro (${err.response.status})`, `Mensagem: ${err.response.data}`)
     } else {
-            Alert.alert('Ops! Ocorreu um Problema!', `Mensagem: ${err}`)
+            Alert.alert(`Erro (${err.response.status})`, `Mensagem: ${err}`)
     }
 }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert, View, Text, ImageBackground, StyleSheet, FlatList, TouchableOpacity, Platform, Modal } from 'react-native'
+import { Alert, View, Text, ImageBackground, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native'
 
 import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios'
@@ -65,7 +65,7 @@ export default class TasksTodo extends Component {
             //No moment ele ira pegar a data atual do dia
             const maxDate = moment()
                 //Adicionando uma quantidades de dias de acorda com a propriedade
-                //passando um objeto e depois a propriedade dos dias a frente
+                //passando um objeto edepois a propriedade do dias a frente
                 //Estou colocando data adicional em cima da formatação e passando para servidor
                 .add({ days: this.props.daysAhead})
                 .format('YYYY-MM-DD 23:59:59')
@@ -187,7 +187,7 @@ export default class TasksTodo extends Component {
                 estimateAt: newTask.date
             })
             //showAddTask: false para sumir o modal
-            //this.loadTasks vai chamar as tarefas mais nova e chamar o filter
+            //this.loadTasks vai chamar as tarefas mais nova e chamas o filter
             this.setState({ showAddTask: false}, this.loadTasks)
 
         } catch(e){
@@ -249,48 +249,41 @@ export default class TasksTodo extends Component {
         const today = moment().locale('pt-br').format('ddd, D [de] MMM')
         return (
             <View style={styles.container}>
+                <AddTask isVisible={this.state.showAddTask} 
+                    //Esse metodo vai ser chamado ao clicar na aplicação da tela de tarefas
+                    //que está dentro do meu modal
+                    onCancel={() => this.setState({showAddTask:false})}
+                    onSave={this.addTask}/>
                 <ImageBackground source={this.getImage()} 
-                        style={styles.background}>
-                        <View style={styles.titleBar}>
-                                <Text style={styles.title}>{this.props.title}</Text>
-                                <Text style={styles.subtitle}>{today}</Text>
-                        </View>        
-                        <AddTask isVisible={this.state.showAddTask} 
-                            //Esse metodo vai ser chamado ao clicar na aplicação da tela de tarefas
-                            //que está dentro do meu modal
-                            onCancel={() => this.setState({showAddTask:false})}
-                            onSave={this.addTask}/>
-                        {/* <ImageBackground source={this.getImage()} 
-                            style={styles.background}>
-                    
-                            <View style={styles.titleBar}>
-                                <Text style={styles.title}>{this.props.title}</Text>
-                                <Text style={styles.subtitle}>{today}</Text>
-                            </View>                                                    
-                                            
-                        </ImageBackground>*/}
-                    
-                        {/* Passando as propriedades para o componente TasksTodo que é o 
-                        pai passando via props para as tasks uma comunicação direta*/}
-                        <View style={styles.tasksTodo}>
-                            {/* O FlatList está percorrendo um array de objetos javascript 
-                            puro sem conexão com algum componente react-native e criando a escrou */}
-                            <FlatList  data={this.state.visibleTasks} 
-                                //Pega a chave gerada a partir de cada um dos itens
-                                //Redenrizando cada um dos itens
-                                keyExtractor={item => `${item.id}`}
-                            // na função render eu recebo o item sendo ele já desestruturado
-                            // Pegando cada atributo e passando para a tarefa, como o id, descrição,
-                            //data estimada e a data de conclusão
-                            //Tendo assim uma comunicação direta, o componente Pai que é TasksTodo passa para
-                            //o componente Tasks o componente filho os  parametros que ele quer que seja usado na hora ,
-                            //de rederizar cada uma das Tasks. O pai passando via props os parametros para o filho
-                            //Sempre que acontecer um evento de delete dentro da tasks nas duas formas de deletar a 
-                            //tarefa do lado direito ou esquerdo, ele vai chamar o metodo deleteTasks e a tarefa vai ser excluida
-                            
-                                renderItem={({item}) => <Task  {...item} onToggleTask={this.toggleTask} onDelete={this.deleteTask} />}/>
-                        </View>
-                </ImageBackground>
+                    style={styles.background}>
+             
+                    <View style={styles.titleBar}>
+                        <Text style={styles.title}>{this.props.title}</Text>
+                        <Text style={styles.subtitle}>{today}</Text>
+                    </View>                                                    
+                                      
+                </ImageBackground>                               
+               
+                {/* Passando as propriedades para o componente TasksTodo que é o 
+                pai passando via props para as tasks uma comunicação direta*/}
+                <View style={styles.tasksTodo}>
+                    {/* O FlatList está percorrendo um array de objetos javascript 
+                    puro sem conexão com algum componente react-native e criando a escrou */}
+                    <FlatList data={this.state.visibleTasks} 
+                        //Pega a chave gerada a partir de cada um dos itens
+                        //Redenrizando cada um dos itens
+                        keyExtractor={item => `${item.id}`}
+                       // na função render eu recebo o item sendo ele já desestruturado
+                       // Pegando cada atributo e passando para a tarefa, como o id, descrição,
+                       //data estimada e a data de conclusão
+                       //Tendo assim uma comunicação direta, o componente Pai que é TasksTodo passa para
+                       //o componente Tasks o componente filho os  parametros que ele quer que seja usado na hora ,
+                       //de rederizar cada uma das Tasks. O pai passando via props os parametros para o filho
+                       //Sempre que acontecer um evento de delete dentro da tasks nas duas formas de deletar a 
+                       //tarefa do lado direito ou esquerdo, ele vai chamar o metodo deleteTasks e a tarefa vai ser excluida
+                       
+                        renderItem={({item}) => <Task {...item} onToggleTask={this.toggleTask} onDelete={this.deleteTask} />}/>
+                </View>
                 <ImageBackground style={[
                     styles.barraImageBackground,
                     { backgroundColor: this.getColor()
@@ -321,7 +314,7 @@ export default class TasksTodo extends Component {
                     activeOpacity={0.7}
                     //Quando clicarmos no botão o onPress vai alterar o estado do atributo
                     onPress={() => this.setState({ showAddTask: true })}>
-                        <Icon name="plus" size={25}
+                    <Icon name="plus" size={25}
                         color={commonStyles.colors.secondary}/>
                 </TouchableOpacity>
                            
@@ -333,39 +326,30 @@ export default class TasksTodo extends Component {
 const styles = StyleSheet.create({
     container: {
         //Permitindo que o componente cresça 100% da tela
-        flex: 1,
+        flex: 1
     },
     background: {
-        flex: 2,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center'
+        flex: 1
     },  
     tasksTodo: {
-        flex: 4,
-        padding:5,        
-        width: '100%',       
+        flex: 10
     },
-       
     barraImageBackground: {
         justifyContent: 'flex-end', 
-        width: '100%',
+        width: 414,
         height: 43, 
-        borderStyle: "solid",
-        //bottom: -30,
-                       
+        borderStyle: "solid"               
     },
     titleBar: {
         flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',        
+        justifyContent: 'flex-end'        
     },
     title: {
         fontFamily: commonStyles.fontFamily,
         color: '#FFFF',
         fontSize: 45,
         marginLeft: 20,        
-        marginBottom: -5,               
+        marginBottom: -5,        
         
     },
     subtitle: {
@@ -384,23 +368,12 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 40 : 10
     },
     addButton: {
-
-        // flexDirection: 'row',
-        // marginHorizontal: 190,
-        // justifyContent: 'center',
-        // bottom: 5,
-        
-        // alignItems: 'center', 
-        // // marginTop: Platform.OS === 'ios' ? 40 : 10          
-        
-       
         position: 'absolute',
         marginHorizontal: 190,
         bottom: 10,
         backgroundColor: commonStyles.colors.today,
         justifyContent: 'center',
         alignItems: 'center'
-        
     }
  
 

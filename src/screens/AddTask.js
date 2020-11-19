@@ -18,7 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 
 import DateTimerPicker from '@react-native-community/datetimepicker'
 
-import commonStyles from '../commonStyles'
+import commonStyles from '../commonStyles.js'
 
 //Defindo estado inicial porque vai ter situações que vou precisar
 //restartar ou resetar o estado
@@ -70,8 +70,7 @@ export default class AddTask extends Component{
                     ele vai mudar o estado para verdadeiro */}
                     <TouchableOpacity style={styles.date}
                         onPress={() => this.setState({showDatePicker: true })}>
-                        <Icon name="calendar" size={20}
-                        color={commonStyles.colors.today}/>
+                        <Icon name="calendar" size={20}/>
                         {/* <Text style={styles.date}>
                             {dateString}
                         </Text> */}
@@ -147,15 +146,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.7)'
     }, 
     container: {
-        backgroundColor: '#FFF'
+        backgroundColor: 'rgba(105,105,105, 0.8)'
     }, 
     header: {
         fontFamily: commonStyles.fontFamily,
-        backgroundColor: commonStyles.colors.today,
+        backgroundColor: '#363636' ,
         color: commonStyles.colors.secondary,
         textAlign: 'center',
-        padding: 15,
-        fontSize: 15
+        padding: 10,
+        fontSize: 20
 
     },
     input: {
@@ -176,13 +175,13 @@ const styles = StyleSheet.create({
     button: {
         margin: 20,
         marginRight: 30,
-        color: commonStyles.colors.today
+       // color: commonStyles.colors.today
     },
     date: {
        //fontFamily: commonStyles.fontFamily,
        // fontSize: 20,
         marginLeft: 20,
-        color: commonStyles.colors.today
+        //color: commonStyles.colors.today
 
     }
         

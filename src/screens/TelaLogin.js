@@ -6,6 +6,7 @@ import {
 } from 'react-native'
 
 import axios from 'axios'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import backgroundImage from '../../assets/imgs/login.jpg'
 import commonStyles from '../commonStyles'
@@ -15,8 +16,8 @@ import { server, showError, showSuccess } from '../common'
 
 const initialState = {
     name:'',
-    email:'farney.tec@gmail.com',
-    password:'123456',
+    email:'',
+    password:'',
     confirmPassowrd:'',
     //Atributo que vai dizer se estou no estado de Cadastro ou de login
     stageNew: false
@@ -66,14 +67,21 @@ export default class TelaLogin extends Component {
                 email: this.state.email,
                 password: this.state.password
             })
-            //Recebenco  a resposta eu tenho o token
+
+            //Irei setar um item no AsyncStorage
+            //Quando o usuário se logar vai ser inserido no AsyncStorage a informação que veio do backend
+            //O nome o email e o token e essa informação está dentro de res.data
+            AsyncStorage.setItem('userData', JSON.stringify(res.data))
+
+            //Recebendo  a resposta eu tenho o token
             //E o token vai ser setado no Header Autorization 
-            //sendo mandado em qualquer nova outorizção que for solicitada
+            //sendo mandado em qualquer nova autorização que for solicitada
             axios.defaults.headers.common['Authorization'] = `bearer ${res.data.token}`
-            //navegação
-            this.props.navigation.navigate('Home')
-                showError(e)
+            //navegação e o segundo parametro é para ter acesso ao email, token e nome do usuário logado
+            this.props.navigation.navigate('Home', res.data)
+                
         } catch(e){
+            showError(e)
 
         }
     }
@@ -102,7 +110,7 @@ export default class TelaLogin extends Component {
                 <Text style={styles.title}>Sem APPerreio</Text>
                 <View style={styles.formContainer}>
                     <Text style={styles.subtitle}>
-                        {this.state.stageNew ? 'Crie a sua conta' : 'Inforne seu dados'}
+                        {this.state.stageNew ? 'Crie a sua conta' : 'Informe seu dados'}
                     </Text>
                     {this.state.stageNew &&
                         <AuthInput icon='user' placeholder='Nome' 
@@ -135,7 +143,7 @@ export default class TelaLogin extends Component {
                         {/* Alterando a cor do botão se o formulario não for valido com expressão ternaria */}
                         <View style={[styles.button, validandoForm ? {} : { backgroundColor: '#AAA'}]}>
                             <Text style={styles.buttonText}>
-                                {this.state.stageNew ? 'Cadastar' : 'Entrar'}
+                                {this.state.stageNew ? 'Cadastrar' : 'Entrar'}
                             </Text>
                         </View>
                     </TouchableOpacity>   
